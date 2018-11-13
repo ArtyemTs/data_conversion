@@ -1,3 +1,5 @@
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.InputMismatchException;
 
@@ -11,24 +13,22 @@ public class Data {
 
     /** @param day в диапазоне от 1 до 31
      * @param  month в диапазоне от 1 до 12
-     * @param year не более текущего года
-     * @throws IllegalArgumentException при выходе за диапазон*/
-     Data(String surname, String name, String patronymic,int day, int month, int year){
+     * @param year не более текущего года*/
+    Data(String surname, String name, String patronymic,int day, int month, int year){
         this.surname = surname;
         this.name = name;
         this.patronymic = patronymic;
         this.day = day;
-        if (day < 1 || day > 31) {
-            throw new IllegalArgumentException("Введено несуществующие число месяца");
-        }
         this.month = month;
-        if (month < 1 || month > 12) {
-            throw new IllegalArgumentException("Введен несуществующий номер месяца");
-        }
         this.year = year;
-        if (year > Calendar.getInstance().get(Calendar.YEAR)) {
-            throw new IllegalArgumentException("Введен еще не наступивший год");
+//Проверка валидности введенной даты. Если не валидна выбрасывается DateTimeException
+        LocalDate localDate = LocalDate.of(year, month, day);
+        LocalDate dateNow = LocalDate.now();
+        Boolean isBetween = ( ! dateNow.isBefore( localDate ) ) ;
+        if(! isBetween){
+            throw new DateTimeException("Введенная дата рождения еще не наступила.");
         }
+
     }
     // Преобразование фамилии и инициалов с учетом регистра
     private String getInitials(){
